@@ -31,7 +31,15 @@ import sirv from "sirv";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const { default: handler } = await import("./dist/server/server.js");
+let handler;
+
+try {
+  ({ default: handler } = await import("./dist/server/server.js"));
+  console.log("✅ SSR handler loaded");
+} catch (err) {
+  console.error("❌ SSR LOAD FAILED:", err);
+  process.exit(1);
+}
 
 const serveStatic = sirv(path.join(__dirname, "dist/client"), {
   etag: true,
